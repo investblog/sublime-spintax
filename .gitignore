@@ -1,0 +1,7 @@
+# macOS / editors
+.DS_Store
+*.sublime-workspace
+
+# Package Control build artifacts
+package-metadata.json
+*.pyc

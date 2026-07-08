@@ -1,0 +1,201 @@
+%YAML 1.2
+---
+# Spintax syntax highlighting for Sublime Text
+# https://spintax.net/docs/syntax
+#
+# Covers the full spintax surface: comments, #set / #include directives,
+# %variables%, {a|b|c} enumerations, [<config>a|b] permutations,
+# {?VAR?then|else} conditionals, and {plural N: form|…} plurals.
+#
+# Grammar mirrors the @spintax/core engine contract:
+#   - permutation <config> is recognised ONLY at the start of [ … ] and only as a
+#     known-key block or a punctuation short-separator (never an HTML tag);
+#   - {plural …} requires a leading space and a mandatory ':';
+#   - {?VAR?…} requires an ASCII identifier and the closing '?';
+#   - #set / #include and %vars% are line-local + ASCII, like the engine.
+
+name: Spintax
+file_extensions:
+  - spintax
+  - gtw
+scope: source.spintax
+
+variables:
+  # Conditional/identifier names: ASCII, letter/underscore first (engine parity).
+  ident: '[A-Za-z_][A-Za-z0-9_]*'
+  var: '%[A-Za-z0-9_]+%'
+
+contexts:
+  main:
+    - include: comments
+    - include: directives
+    - include: vars
+    - include: conditionals
+    - include: plurals
+    - include: enumerations
+    - include: permutations
+
+  # Reusable content that can appear inside { }, [ ] and conditional branches.
+  # Order matters: conditionals/plurals must precede the generic '{' enumeration
+  # rule, else '{?' and '{plural ' are swallowed as enumerations.
+  nested:
+    - include: comments
+    - include: vars
+    - include: conditionals
+    - include: plurals
+    - include: enumerations
+    - include: permutations
+    - match: '\|'
+      scope: punctuation.separator.spintax
+
+  # ========================= Comments /#...#/ =========================
+  comments:
+    - match: '/#'
+      scope: punctuation.definition.comment.begin.spintax
+      push:
+        - meta_scope: comment.block.spintax
+        - match: '#/'
+          scope: punctuation.definition.comment.end.spintax
+          pop: true
+
+  # ========================= Directives (line-local [ \t], like the engine) ===
+  directives:
+    # #set %variable% = value
+    - match: '^([ \t]*)(#set)[ \t]+({{var}})[ \t]*(=)'
+      captures:
+        2: keyword.other.directive.set.spintax
+        3: entity.name.variable.definition.spintax
+        4: keyword.operator.assignment.spintax
+    # #include "slug-or-id"
+    - match: '^([ \t]*)(#include)[ \t]+("[^"]*")'
+      captures:
+        2: keyword.other.directive.include.spintax
+        3: string.quoted.double.include.spintax
+
+  # ========================= Variables %name% =========================
+  vars:
+    - match: '{{var}}'
+      scope: variable.other.spintax
+
+  # ========================= Conditionals {?VAR?then|else} =========================
+  # Strict opener: '{' '?' optional '!' IDENT '?'. A bad name ({??x}, {?1x?…})
+  # or a missing '?' is NOT a conditional and falls through to enumeration.
+  conditionals:
+    - match: '(\{)(\?)(!?)({{ident}})(\?)'
+      captures:
+        1: punctuation.section.braces.begin.spintax
+        2: keyword.operator.conditional.spintax
+        3: keyword.operator.negation.spintax
+        4: variable.other.conditional.spintax
+        5: punctuation.separator.query.spintax
+      push: conditional_body
+
+  conditional_body:
+    - meta_scope: meta.conditional.spintax
+    - match: '\}'
+      scope: punctuation.section.braces.end.spintax
+      pop: true
+    - match: '\|'
+      scope: punctuation.separator.spintax
+    - include: nested
+
+  # ========================= Plurals {plural N: a|b|c} =========================
+  # Engine prefix is the literal '{plural ' (space) and the ':' is mandatory;
+  # '{plural noun}' and '{plural: x}' are NOT plurals.
+  plurals:
+    - match: '(\{)(plural)(?= [^{}]*:)'
+      captures:
+        1: punctuation.section.braces.begin.spintax
+        2: keyword.other.plural.spintax
+      push: plural_body
+
+  plural_body:
+    - meta_scope: meta.plural.spintax
+    - match: '\}'
+      scope: punctuation.section.braces.end.spintax
+      pop: true
+    # count slot before the ':' — %var% or a literal integer
+    - match: '{{var}}'
+      scope: variable.other.spintax
+    - match: '\b\d+\b'
+      scope: constant.numeric.spintax
+    - match: ':'
+      scope: punctuation.separator.key-value.spintax
+    - match: '\|'
+      scope: punctuation.separator.spintax
+    # forms are plain text (the engine forbids nested brackets inside a form)
+
+  # ========================= Enumerations {a|b|c} =========================
+  enumerations:
+    - match: '\{'
+      scope: punctuation.section.braces.begin.spintax
+      push: enum_body
+
+  enum_body:
+    - meta_scope: meta.enumeration.spintax
+    - match: '\}'
+      scope: punctuation.section.braces.end.spintax
+      pop: true
+    - include: nested
+
+  # ========================= Permutations [<config>a|b|c] =========================
+  permutations:
+    - match: '\['
+      scope: punctuation.section.brackets.begin.spintax
+      push: perm_start
+
+  # One-shot: consume an OPTIONAL leading <config> (only here, at the start), then
+  # hand off to the item body. This is what anchors config to the beginning and
+  # stops HTML like [<li>a</li>|b] or [<a href="/x">…|b] being read as config.
+  perm_start:
+    - meta_scope: meta.permutation.spintax
+    # key=value config block: a leading '<' whose contents hold a known key '='
+    - match: '<(?=[^<>]*\b(?:minsize|maxsize|sep|lastsep)\s*=)'
+      scope: punctuation.section.angle.begin.spintax
+      push: perm_config_inner
+    # Leading single-separator <X>. A separator UNLESS X is an HTML start tag:
+    # self-closing <x/>, or <tag …> with a matching </tag> before ']' (engine
+    # looksLikeHtmlStartTag). So <, >, <->, <and> (no </and>) ARE separators;
+    # <li>…</li> and <a href=…>…</a> are not.
+    - match: '(<)(?!([A-Za-z][A-Za-z0-9-]*)(?:\s+[^>]*)?(?:/>|>[^\]]*</\2\s*>))([^<>]*)(>)'
+      captures:
+        1: punctuation.section.angle.begin.spintax
+        3: string.unquoted.separator.spintax
+        4: punctuation.section.angle.end.spintax
+      set: perm_body
+    # anything else → no leading config; go straight to the items (no consume)
+    - match: ''
+      set: perm_body
+
+  perm_body:
+    - meta_scope: meta.permutation.spintax
+    - match: '\]'
+      scope: punctuation.section.brackets.end.spintax
+      pop: true
+    # Per-element trailing separator <X> right before '|' or ']' (engine
+    # extractTrailingSep). A separator unless X is </x>, <x/>, or <tag …>.
+    - match: '(<)(?!/)(?![A-Za-z][A-Za-z0-9]*\s)([^<>]*[^<>/])(>)(?=[ \t]*[|\]])'
+      captures:
+        1: punctuation.section.angle.begin.spintax
+        2: string.unquoted.separator.spintax
+        3: punctuation.section.angle.end.spintax
+    - match: '\|'
+      scope: punctuation.separator.spintax
+    - include: nested
+
+  # Config block internals: <minsize=2;maxsize=3;sep=", ";lastsep=" and ">
+  perm_config_inner:
+    - meta_scope: meta.permutation.config.spintax
+    - match: '>'
+      scope: punctuation.section.angle.end.spintax
+      pop: true
+    - match: '\b(minsize|maxsize|sep|lastsep)\b'
+      scope: variable.parameter.spintax
+    - match: '='
+      scope: keyword.operator.assignment.spintax
+    - match: '"[^"]*"'
+      scope: string.quoted.double.spintax
+    - match: '\d+'
+      scope: constant.numeric.spintax
+    - match: ';'
+      scope: punctuation.separator.config.spintax
