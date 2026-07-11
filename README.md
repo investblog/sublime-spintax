@@ -52,11 +52,14 @@ Clone or download this repo into your Sublime Text `Packages/` directory
 
 ## Development
 
-The grammar's discriminators are checked in CI:
+Tokenization is verified with Sublime Text's own syntax test runner. The assertions live in
+[`tests/syntax_test_spintax.spintax`](./tests/syntax_test_spintax.spintax) and cover every
+construct plus the tricky discriminators (permutation config vs. HTML, leading/trailing
+separators, strict conditional/plural openers). CI runs them against Sublime Text `latest`,
+`stable`, and an ST3 build via [`SublimeText/syntax-test-action`](https://github.com/SublimeText/syntax-test-action).
 
-```sh
-python tests/validate_syntax.py
-```
+Run them locally from Sublime Text with **Build With: Syntax Tests** (<kbd>Ctrl/Cmd</kbd>+<kbd>B</kbd>)
+while the test file is open.
 
 The [VS Code sibling](https://github.com/investblog/vscode-spintax) additionally verifies the
 mirrored TextMate grammar headlessly (`vscode-tmgrammar-test`) under the real Oniguruma engine.

@@ -3,6 +3,15 @@
 All notable changes to the Spintax syntax highlighting package are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- Tests are now Sublime Text syntax test files (`tests/syntax_test_spintax.spintax`) run by the
+  official [`SublimeText/syntax-test-action`](https://github.com/SublimeText/syntax-test-action),
+  replacing the previous Python validation script. CI exercises the grammar on Sublime Text
+  `latest`, `stable`, and an ST3 build, confirming ST3092+ compatibility.
+
 ## 1.0.0 — 2026-07-08
 
 First release. Engine-accurate highlighting for the full spintax surface, matching the

@@ -1,0 +1,78 @@
+/# SYNTAX TEST "Packages/Spintax/Spintax.sublime-syntax" #/
+
+    /# a comment #/
+/#  ^^ comment.block.spintax punctuation.definition.comment.begin.spintax #/
+/#     ^^^^^^^^^ comment.block.spintax #/
+/#               ^^ comment.block.spintax punctuation.definition.comment.end.spintax #/
+
+    %product%
+/#  ^^^^^^^^^ variable.other.spintax #/
+
+    #set %x% = hi
+/#  ^^^^ keyword.other.directive.set.spintax #/
+/#       ^^^ entity.name.variable.definition.spintax #/
+/#           ^ keyword.operator.assignment.spintax #/
+
+    #include "slug"
+/#  ^^^^^^^^ keyword.other.directive.include.spintax #/
+/#           ^^^^^^ string.quoted.double.include.spintax #/
+
+    {a|b|c}
+/#  ^ punctuation.section.braces.begin.spintax #/
+/#    ^ meta.enumeration.spintax punctuation.separator.spintax #/
+/#        ^ punctuation.section.braces.end.spintax #/
+
+    {?VAR?a|b}
+/#  ^ punctuation.section.braces.begin.spintax #/
+/#   ^ keyword.operator.conditional.spintax #/
+/#    ^^^ variable.other.conditional.spintax #/
+/#       ^ punctuation.separator.query.spintax #/
+/#         ^ meta.conditional.spintax punctuation.separator.spintax #/
+/#           ^ punctuation.section.braces.end.spintax #/
+
+    {?!VAR?a|b}
+/#   ^ keyword.operator.conditional.spintax #/
+/#    ^ keyword.operator.negation.spintax #/
+/#     ^^^ variable.other.conditional.spintax #/
+/#        ^ punctuation.separator.query.spintax #/
+
+    {plural %n%: a|b}
+/#  ^ punctuation.section.braces.begin.spintax #/
+/#   ^^^^^^ keyword.other.plural.spintax #/
+/#          ^^^ meta.plural.spintax variable.other.spintax #/
+/#             ^ punctuation.separator.key-value.spintax #/
+/#                ^ meta.plural.spintax punctuation.separator.spintax #/
+
+    [<minsize=2;sep=", ">a|b]
+/#  ^ punctuation.section.brackets.begin.spintax #/
+/#   ^ punctuation.section.angle.begin.spintax #/
+/#    ^^^^^^^ variable.parameter.spintax #/
+/#           ^ keyword.operator.assignment.spintax #/
+/#            ^ constant.numeric.spintax #/
+/#             ^ punctuation.separator.config.spintax #/
+/#              ^^^ variable.parameter.spintax #/
+/#                  ^^^^ string.quoted.double.spintax #/
+/#                      ^ punctuation.section.angle.end.spintax #/
+/#                          ^ punctuation.section.brackets.end.spintax #/
+
+    [<and>x|y]
+/#   ^ punctuation.section.angle.begin.spintax #/
+/#    ^^^ string.unquoted.separator.spintax #/
+/#       ^ punctuation.section.angle.end.spintax #/
+
+    [<li>a</li>|b]
+/#   ^ meta.permutation.spintax - punctuation.section.angle.begin.spintax - string.unquoted.separator.spintax #/
+/#             ^ punctuation.separator.spintax #/
+/#               ^ punctuation.section.brackets.end.spintax #/
+
+    [<a href="/x">z</a>|b]
+/#   ^ meta.permutation.spintax - punctuation.section.angle.begin.spintax - string.unquoted.separator.spintax #/
+
+    [a<, >|b]
+/#    ^ punctuation.section.angle.begin.spintax #/
+/#     ^^ string.unquoted.separator.spintax #/
+/#       ^ punctuation.section.angle.end.spintax #/
+
+    {??x}
+/#  ^ punctuation.section.braces.begin.spintax #/
+/#   ^ meta.enumeration.spintax - keyword.operator.conditional.spintax #/
