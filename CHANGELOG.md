@@ -3,7 +3,7 @@
 All notable changes to the Spintax syntax highlighting package are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 1.1.0 — 2026-07-19
 
 ### Added
 
@@ -15,6 +15,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `#def` gets its own scope, `keyword.other.directive.def.spintax`, rather than
   sharing `#set`'s. The directives mean genuinely different things, so a colour
   scheme must be able to tell them apart.
+
+### Fixed
+
+- Directives on their own line inside a multi-line `{ … }` or `[ … ]` are now
+  highlighted. The engine extracts `#set`/`#def` from the whole source
+  line-by-line, independent of bracket nesting, so such a line really does define
+  a variable — it was previously rendered as plain enumeration text. Pre-existing
+  for `#set`; fixed for both.
 
 ### Changed
 

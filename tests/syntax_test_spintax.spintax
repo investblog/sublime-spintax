@@ -35,6 +35,13 @@
     #DEF %x% = x
 /#  ^^^^ - keyword.other.directive.def.spintax #/
 
+    {alpha|
+/#  ^ punctuation.section.braces.begin.spintax #/
+    #def %inner% = ZZZ
+/#  ^^^^ keyword.other.directive.def.spintax #/
+/#       ^^^^^^^ entity.name.variable.definition.spintax #/
+    beta}
+
     #include "slug"
 /#  ^^^^^^^^ keyword.other.directive.include.spintax #/
 /#           ^^^^^^ string.quoted.double.include.spintax #/

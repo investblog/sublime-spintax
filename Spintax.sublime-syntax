@@ -40,6 +40,10 @@ contexts:
   # rule, else '{?' and '{plural ' are swallowed as enumerations.
   nested:
     - include: comments
+    # Directives are line-anchored and the engine extracts them from the whole
+    # source regardless of bracket nesting, so a #set/#def on its own line inside
+    # a multi-line { } or [ ] really does define a variable. Highlight it.
+    - include: directives
     - include: vars
     - include: conditionals
     - include: plurals
