@@ -13,6 +13,16 @@
 /#       ^^^ entity.name.variable.definition.spintax #/
 /#           ^ keyword.operator.assignment.spintax #/
 
+    #def %x% = hi
+/#  ^^^^ keyword.other.directive.def.spintax #/
+/#       ^^^ entity.name.variable.definition.spintax #/
+/#           ^ keyword.operator.assignment.spintax #/
+
+    #def %x% =
+/#  ^^^^ keyword.other.directive.def.spintax #/
+/#       ^^^ entity.name.variable.definition.spintax #/
+/#           ^ keyword.operator.assignment.spintax #/
+
     #include "slug"
 /#  ^^^^^^^^ keyword.other.directive.include.spintax #/
 /#           ^^^^^^ string.quoted.double.include.spintax #/

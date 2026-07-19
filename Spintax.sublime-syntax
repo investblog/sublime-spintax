@@ -3,7 +3,7 @@
 # Spintax syntax highlighting for Sublime Text
 # https://spintax.net/docs/syntax
 #
-# Covers the full spintax surface: comments, #set / #include directives,
+# Covers the full spintax surface: comments, #set / #def / #include directives,
 # %variables%, {a|b|c} enumerations, [<config>a|b] permutations,
 # {?VAR?then|else} conditionals, and {plural N: form|…} plurals.
 #
@@ -12,7 +12,7 @@
 #     known-key block or a punctuation short-separator (never an HTML tag);
 #   - {plural …} requires a leading space and a mandatory ':';
 #   - {?VAR?…} requires an ASCII identifier and the closing '?';
-#   - #set / #include and %vars% are line-local + ASCII, like the engine.
+#   - #set / #def / #include and %vars% are line-local + ASCII, like the engine.
 
 name: Spintax
 file_extensions:
@@ -64,6 +64,14 @@ contexts:
     - match: '^([ \t]*)(#set)[ \t]+({{var}})[ \t]*(=)'
       captures:
         2: keyword.other.directive.set.spintax
+        3: entity.name.variable.definition.spintax
+        4: keyword.operator.assignment.spintax
+    # #def %variable% = value  — resolved once per render, held everywhere.
+    # Own scope, not shared with #set: the two mean different things, so a
+    # theme must be able to colour them apart.
+    - match: '^([ \t]*)(#def)[ \t]+({{var}})[ \t]*(=)'
+      captures:
+        2: keyword.other.directive.def.spintax
         3: entity.name.variable.definition.spintax
         4: keyword.operator.assignment.spintax
     # #include "slug-or-id"

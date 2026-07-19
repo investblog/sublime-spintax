@@ -12,7 +12,8 @@ contract. Applies to `.spintax` and `.gtw` files.
 | Enumeration | `{a\|b\|c}` |
 | Permutation | `[<minsize=2;maxsize=3;sep=", ">a\|b\|c]` |
 | Variable | `%name%` |
-| Local set | `#set %name% = value` |
+| Local set | `#set %name% = value` — macro, re-rolled at every reference |
+| Local def | `#def %name% = value` — resolved once per render, held everywhere |
 | Include | `#include "slug-or-id"` |
 | Conditional | `{?VAR?then\|else}` · `{?!VAR?…}` |
 | Plural | `{plural %n%: one\|few\|many}` |
@@ -23,6 +24,7 @@ contract. Applies to `.spintax` and `.gtw` files.
 ```spintax
 /# hero block #/
 #set %product% = Acme
+#def %tone% = {friendly|warm}
 {Welcome to|Meet} %product% — %tagline%, trusted since {2019|2020}.
 Ships with [<minsize=2;maxsize=3;sep=", ";lastsep=" and ">SSO|audit logs|alerts]{?free? — free tier available|}.
 You have %n% {plural %n%: message|messages}.

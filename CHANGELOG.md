@@ -5,6 +5,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## Unreleased
 
+### Added
+
+- Highlighting for the `#def` directive, shipped in Spintax engine 3.0.0 /
+  `@spintax/core` 0.3.0. Same line-anchored shape as `#set`
+  (`#def %name% = value`), opposite semantics: `#set` is a macro whose value is
+  re-substituted and re-rolled at every reference, while `#def` resolves once per
+  render and holds that result everywhere.
+- `#def` gets its own scope, `keyword.other.directive.def.spintax`, rather than
+  sharing `#set`'s. The directives mean genuinely different things, so a colour
+  scheme must be able to tell them apart.
+
 ### Changed
 
 - Tests are now Sublime Text syntax test files (`tests/syntax_test_spintax.spintax`) run by the
