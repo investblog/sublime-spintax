@@ -3,6 +3,14 @@
 All notable changes to the Spintax syntax highlighting package are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.1 — 2026-07-19
+
+### Fixed
+
+- `.gitattributes` now marks development files `export-ignore`, so the installed
+  package contains only what Sublime loads: the syntax, the comment preferences,
+  README, CHANGELOG and LICENSE. Tests and CI config previously shipped to users.
+
 ## 1.1.0 — 2026-07-19
 
 ### Added
