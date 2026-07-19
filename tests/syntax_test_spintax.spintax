@@ -23,6 +23,18 @@
 /#       ^^^ entity.name.variable.definition.spintax #/
 /#           ^ keyword.operator.assignment.spintax #/
 
+    #define %x% = x
+/#  ^^^^^^^ - keyword.other.directive.def.spintax #/
+
+    #def %x = x
+/#  ^^^^ - keyword.other.directive.def.spintax #/
+
+    text #def %x% = x
+/#       ^^^^ - keyword.other.directive.def.spintax #/
+
+    #DEF %x% = x
+/#  ^^^^ - keyword.other.directive.def.spintax #/
+
     #include "slug"
 /#  ^^^^^^^^ keyword.other.directive.include.spintax #/
 /#           ^^^^^^ string.quoted.double.include.spintax #/
