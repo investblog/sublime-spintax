@@ -3,6 +3,17 @@
 All notable changes to the Spintax syntax highlighting package are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- Pushing a version tag now publishes the GitHub Release automatically, with
+  notes taken from this file's matching section; a tag with no section fails the
+  job instead of publishing an empty release. The three newest releases are kept
+  and older entries removed — tags are never deleted, since Package Control
+  resolves installable versions from them.
+- CI uses `actions/checkout@v5`; v4 targets the deprecated Node.js 20.
+
 ## 1.2.0 — 2026-07-20
 
 ### Changed

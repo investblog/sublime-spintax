@@ -62,6 +62,11 @@ separators, strict conditional/plural openers). CI runs them against Sublime Tex
 Run them locally from Sublime Text with **Build With: Syntax Tests** (<kbd>Ctrl/Cmd</kbd>+<kbd>B</kbd>)
 while the test file is open.
 
+Releases are published from tags: tag a commit `X.Y.Z` and push it, and the release workflow
+creates the GitHub Release using the matching `## X.Y.Z` section of
+[`CHANGELOG.md`](./CHANGELOG.md) as its notes — so that section has to exist first. Package
+Control installs from tags, so a tag is the release; the GitHub Release entry is the shop window.
+
 The [VS Code sibling](https://github.com/investblog/vscode-spintax) additionally verifies the
 mirrored TextMate grammar headlessly (`vscode-tmgrammar-test`) under the real Oniguruma engine.
 
