@@ -17,7 +17,6 @@
 name: Spintax
 file_extensions:
   - spintax
-  - gtw
 scope: source.spintax
 
 variables:

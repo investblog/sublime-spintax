@@ -3,6 +3,30 @@
 All notable changes to the Spintax syntax highlighting package are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0 — 2026-07-20
+
+### Changed
+
+- The syntax no longer claims the `.gtw` extension; it applies to `.spintax` only.
+  `.gtw` belongs to Generating The Web — the 2009 application this syntax was
+  originally based on — and is a container format rather than raw template text,
+  so highlighting it as spintax was wrong. The Modern Spintax Engine has its own
+  standard, and `.spintax` is its canonical extension.
+- README drops the remaining GTW wording and names the Modern Spintax Engine
+  (`@spintax/core`) as the contract the grammar mirrors.
+
+### Fixed
+
+- README rendered incorrectly on packagecontrol.io: the construct table was cut
+  off at the first `|` inside each example (escaped pipes are not honoured there),
+  and the `spintax` code fence raised *language not supported*. The table is now a
+  list and the fence is untagged, so every example shows in full.
+
+### Documentation
+
+- Document the empty enumeration option (`{|a|b}`) and the bare permutation form
+  (`[a|b|c]`) alongside the configured one.
+
 ## 1.1.1 — 2026-07-19
 
 ### Fixed

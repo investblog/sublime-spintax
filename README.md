@@ -4,24 +4,23 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 Syntax highlighting for [**spintax**](https://spintax.net) templates in Sublime Text —
-engine-accurate against the [`@spintax/core`](https://www.npmjs.com/package/@spintax/core)
-contract. Applies to `.spintax` and `.gtw` files.
+engine-accurate against the Modern Spintax Engine
+([`@spintax/core`](https://www.npmjs.com/package/@spintax/core)) contract.
+Applies to `.spintax` files.
 
-| Construct | Example |
-| --- | --- |
-| Enumeration | `{a\|b\|c}` |
-| Permutation | `[<minsize=2;maxsize=3;sep=", ">a\|b\|c]` |
-| Variable | `%name%` |
-| Local set | `#set %name% = value` — macro, re-rolled at every reference |
-| Local def | `#def %name% = value` — resolved once per render, held everywhere |
-| Include | `#include "slug-or-id"` |
-| Conditional | `{?VAR?then\|else}` · `{?!VAR?…}` |
-| Plural | `{plural %n%: one\|few\|many}` |
-| Comment | `/# … #/` |
+- **Enumeration** — `{a|b|c}`, empty option allowed: `{|a|b}`
+- **Permutation** — `[a|b|c]`, with config `[<minsize=2;maxsize=3;sep=", ">a|b|c]`
+- **Variable** — `%name%`
+- **Local set** — `#set %name% = value` — macro, re-rolled at every reference
+- **Local def** — `#def %name% = value` — resolved once per render, held everywhere
+- **Include** — `#include "slug-or-id"`
+- **Conditional** — `{?VAR?then|else}`, `{?!VAR?…}`
+- **Plural** — `{plural %n%: one|few|many}`
+- **Comment** — `/# … #/`
 
 ## Example
 
-```spintax
+```
 /# hero block #/
 #set %product% = Acme
 #def %tone% = {friendly|warm}
