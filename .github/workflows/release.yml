@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+env:
+  # How many Release entries to keep. Older ones are removed; their TAGS stay.
+  KEEP_RELEASES: 3
+
+jobs:
+  release:
+    name: Publish ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      # Notes come from CHANGELOG.md. No section for this tag -> no release:
+      # a version users can install must say what changed in it.
+      - name: Extract release notes
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## " v " " || $0 == "## " v { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::CHANGELOG.md has no '## $VERSION' section — refusing to publish an empty release."
+            exit 1
+          fi
+          echo "Release notes for $VERSION:"
+          cat notes.md
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "Spintax $GITHUB_REF_NAME" \
+            --notes-file notes.md
+          echo "Created **Spintax $GITHUB_REF_NAME**" >> "$GITHUB_STEP_SUMMARY"
+
+      # Keep the release list short. Tags are never deleted — Package Control
+      # resolves installable versions from tags, so dropping one would break
+      # installs of that version.
+      - name: Prune old releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          stale=$(gh release list --limit 100 --json tagName --jq '.[].tagName' | tail -n +$((KEEP_RELEASES + 1)))
+          if [ -z "$stale" ]; then
+            echo "Nothing to prune (keeping $KEEP_RELEASES)." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "Pruned (tag kept):" >> "$GITHUB_STEP_SUMMARY"
+          for tag in $stale; do
+            gh release delete "$tag" --yes
+            echo "- $tag" >> "$GITHUB_STEP_SUMMARY"
+          done
